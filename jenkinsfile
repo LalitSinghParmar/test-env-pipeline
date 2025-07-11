@@ -26,12 +26,14 @@ pipeline{
             }
         }
         stage('Publish HTML report'){
-            sh 'Publishing the HTML report'
-            publishHTML target:[
-                reportDir:'.',
-                reportFiles:'report.html',
-                reportName:'Pytest result'
-            ]
+            steps{
+                sh 'Publishing the HTML report'
+                publishHTML target:[
+                    reportDir:'.',
+                    reportFiles:'report.html',
+                    reportName:'Pytest result'
+                ]
+            }
         }
         stage('Cleanup'){
             steps{
