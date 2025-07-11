@@ -1,0 +1,42 @@
+pipeline{
+    agent any
+    parameters{
+        choice(name: 'TARGET_ENV', choices:['production', 'staging'], description:'Choose your env')
+    }
+    environment{
+        IMAGE_NAME = 'env_docker_pipeline'
+    }
+    stages{
+        stage('Checkout scm'){
+            steps{
+                checkout scm
+            }
+        }
+        stage('Build Docker image'){
+            steps{
+                echo "Building docker image"
+                sh 'docker build --rm -t $IMAGE_NAME .'
+            }
+        }
+        stage('Run Test'){
+            steps{
+                sh 'cp .env.{TARGET_NAME} .env'
+                echo "Running pytest"
+                sh 'docker run -v /app:. $IMAGE_NAME'
+            }
+        }
+        stage('Publish HTML report'){
+            publishHTML target:[
+                reportDir:'.',
+                reportFiles:'report.html',
+                reportName:'Pytest result'
+            ]
+        }
+        stage('Cleanup'){
+            steps{
+                echo "Cleaning up the build"
+                sh 'docker image rm $IMAGE_NAME'
+            }
+        }
+    }
+}
