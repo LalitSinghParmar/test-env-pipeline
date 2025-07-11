@@ -26,6 +26,7 @@ pipeline{
             }
         }
         stage('Publish HTML report'){
+            sh 'Publishing the HTML report'
             publishHTML target:[
                 reportDir:'.',
                 reportFiles:'report.html',
