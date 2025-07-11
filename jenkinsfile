@@ -20,7 +20,7 @@ pipeline{
         }
         stage('Run Test'){
             steps{
-                sh 'cp .env.{TARGET_NAME} .env'
+                sh 'cp .env.${params.TARGET_NAME} .env'
                 echo "Running pytest"
                 sh 'docker run -v /app:. $IMAGE_NAME'
             }
